@@ -2,9 +2,16 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:icon="clr-namespace:VolumeMixer.Resources.Styles"
+             xmlns:vm="clr-namespace:VolumeMixer.ViewModels"
              ios:Page.UseSafeArea="True"
              Background="#999999"
-             x:Class="VolumeMixer.MainPage">
+             Shell.NavBarIsVisible="False"
+             x:Class="VolumeMixer.Pages.MainPage">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel/>
+    </ContentPage.BindingContext>
 
     <ContentPage.Resources>
         <Style TargetType="Slider">
@@ -28,7 +35,20 @@
         <Button BackgroundColor="#FF9900" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button BackgroundColor="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
 
-        
+        <Button VerticalOptions="Start" HorizontalOptions="End" Grid.ColumnSpan="4"
+                WidthRequest="64"
+                HeightRequest="64"
+                Background="Transparent"
+                Margin="-30"
+                x:Name="ConnectBtn"
+                Command="{Binding ConnectCommand}"
+                >
+            <Button.ImageSource>
+                <FontImageSource FontFamily="FontAwesome"
+                                 Glyph="{x:Static icon:IconFont.Server}"
+                                 Color="#1d1d1d"/>
+            </Button.ImageSource>
+        </Button>
     </Grid>
 
 </ContentPage>

@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace VolumeMixer
+namespace VolumeMixer.Pages
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage
     {
         public MainPage()
         {
@@ -26,6 +26,10 @@ namespace VolumeMixer
             BoxView thumb = (BoxView)sender;
 
             
+        }
+
+        void ConnectBtn_Clicked(System.Object sender, System.EventArgs e)
+        {
         }
     }
 }
