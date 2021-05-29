@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             ios:Page.UseSafeArea="True"
+             Background="#999999"
+             x:Class="VolumeMixer.MainPage">
+
+    <ContentPage.Resources>
+        <Style TargetType="Slider">
+            <Setter Property="Rotation" Value="-90"/>
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="100"/>
+            <Setter Property="ThumbColor" Value="Black"/>
+            <Setter Property="MinimumTrackColor" Value="#FF3300"/>
+            <Setter Property="MaximumTrackColor" Value="#d1d1d1"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,150" Margin="30">
+        <Slider Grid.Column="0" Grid.Row="1"/>
+        <Slider Grid.Column="1" Grid.Row="1"/>
+        <Slider Grid.Column="2" Grid.Row="1"/>
+        <Slider Grid.Column="3" Grid.Row="1"/>
+
+        <Button Clicked="Button_Clicked" BackgroundColor="#FF3300" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button BackgroundColor="#FF6600" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button BackgroundColor="#FF9900" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button BackgroundColor="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+    </Grid>
+
+</ContentPage>
