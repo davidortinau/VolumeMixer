@@ -1,71 +1,187 @@
 ﻿using System;
-using System.Net.Sockets;
-using System.Net;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading;
-using System.Net.Mqtt;
+using MQTTnet;
+using MQTTnet.Protocol;
+using MQTTnet.Server;
+
+using Newtonsoft.Json;
+
+using Serilog;
 
 namespace VolumeMixer.Server
 {
 	class Program
 	{
-		const int loopDelayTime = 250;
-		const string topic = "test/chat/message";
-		const string exitMessage = "exit";
+        /// <summary>
+        /// The logger.
+        /// </summary>
+        private static readonly ILogger Logger = Log.ForContext<Program>();
 
-		static void Main(string[] args)
-		{
-			bool isFinishing = false;
-			var deviceIpAddress = GetLocalIPAddress();
-			var config = new MqttConfiguration { Port = 1235 };
-			var server = MqttServer.Create(config);
+        /// <summary>
+        ///     The main method that starts the service.
+        /// </summary>
+        [SuppressMessage(
+            "StyleCop.CSharp.DocumentationRules",
+            "SA1650:ElementDocumentationMustBeSpelledCorrectly",
+            Justification = "Reviewed. Suppression is OK here.")]
+        public static void Main()
+        {
+            var currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-			server.Start();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                // ReSharper disable once AssignNullToNotNullAttribute
+                .WriteTo.File(Path.Combine(currentPath,@"log\SimpleMqttServer_.txt"), rollingInterval: RollingInterval.Day)
+                .WriteTo.Console()
+                .CreateLogger();
 
-			var client = server.CreateClientAsync().Result;
-			var clientId = client.Id;
-			var received = "";
+            var config = ReadConfiguration(currentPath);
 
-			client.SubscribeAsync(topic, MqttQualityOfService.AtLeastOnce).Wait();
-			client.MessageStream.Subscribe(message => {
-				if (isFinishing)
-					return;
-				var data = Encoding.UTF8.GetString(message.Payload).Split(new string[] { ":" }, StringSplitOptions.None);
-				Console.WriteLine($"Message Received from {data[0]}: {data[1]}");
+            var optionsBuilder = new MqttServerOptionsBuilder()
+                .WithDefaultEndpoint().WithDefaultEndpointPort(config.Port).WithConnectionValidator(
+                    c =>
+                    {
+                        var currentUser = config.Users.FirstOrDefault(u => u.UserName == c.Username);
 
-				received = data[1];
+                        if (currentUser == null)
+                        {
+                            c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
+                            LogMessage(c, true);
+                            return;
+                        }
 
-				PublishAsync(client, clientId, exitMessage);
+                        if (c.Username != currentUser.UserName)
+                        {
+                            c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
+                            LogMessage(c, true);
+                            return;
+                        }
 
-				if (received == exitMessage)
-					isFinishing = true;
-			});
+                        if (c.Password != currentUser.Password)
+                        {
+                            c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
+                            LogMessage(c, true);
+                            return;
+                        }
 
-			Console.WriteLine($"Server {deviceIpAddress}:{config.Port} with topic '{topic}' is up.");
-			Console.WriteLine($"Awaiting messages...");
+                        c.ReasonCode = MqttConnectReasonCode.Success;
+                        LogMessage(c, false);
+                    }).WithSubscriptionInterceptor(
+                    c =>
+                    {
+                        c.AcceptSubscription = true;
+                        LogMessage(c, true);
+                    }).WithApplicationMessageInterceptor(
+                    c =>
+                    {
+                        c.AcceptPublish = true;
+                        LogMessage(c);
+                    });
 
-			while (received != exitMessage)
-			{
-				Thread.Sleep(loopDelayTime);
-			}
-			Console.WriteLine("Shutting down... Received exit command.");
-		}
+            var mqttServer = new MqttFactory().CreateMqttServer();
+            mqttServer.StartAsync(optionsBuilder.Build());
+            Console.ReadLine();
+        }
 
-		static void PublishAsync(IMqttConnectedClient client, string clientId, string message)
-		{
-			Console.WriteLine($"Sending message to {clientId}: {message}");
-			client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce).Wait();
-		}
+        /// <summary>
+        ///     Reads the configuration.
+        /// </summary>
+        /// <param name="currentPath">The current path.</param>
+        /// <returns>A <see cref="Config" /> object.</returns>
+        private static Config ReadConfiguration(string currentPath)
+        {
+            var filePath = $"{currentPath}\\config.json";
 
-		public static string GetLocalIPAddress()
-		{
-			var host = Dns.GetHostEntry(Dns.GetHostName());
-			foreach (var ip in host.AddressList)
-			{
-				if (ip.AddressFamily == AddressFamily.InterNetwork)
-					return ip.ToString();
-			}
-			throw new Exception("Local IP Address Not Found!");
-		}
-	}
+            Config config = null;
+
+            // ReSharper disable once InvertIf
+            if (File.Exists(filePath))
+            {
+                using var r = new StreamReader(filePath);
+                var json = r.ReadToEnd();
+                config = JsonConvert.DeserializeObject<Config>(json);
+            }
+
+            return config;
+        }
+
+        /// <summary> 
+        ///     Logs the message from the MQTT subscription interceptor context. 
+        /// </summary> 
+        /// <param name="context">The MQTT subscription interceptor context.</param> 
+        /// <param name="successful">A <see cref="bool"/> value indicating whether the subscription was successful or not.</param> 
+        private static void LogMessage(MqttSubscriptionInterceptorContext context, bool successful)
+        {
+            if (context == null)
+            {
+                return;
+            }
+
+            Logger.Information(
+                successful
+                    ? "New subscription: ClientId = {clientId}, TopicFilter = {topicFilter}"
+                    : "Subscription failed for clientId = {clientId}, TopicFilter = {topicFilter}",
+                context.ClientId,
+                context.TopicFilter);
+        }
+
+        /// <summary>
+        ///     Logs the message from the MQTT message interceptor context.
+        /// </summary>
+        /// <param name="context">The MQTT message interceptor context.</param>
+        private static void LogMessage(MqttApplicationMessageInterceptorContext context)
+        {
+            if (context == null)
+            {
+                return;
+            }
+
+            var payload = context.ApplicationMessage?.Payload == null ? null : Encoding.UTF8.GetString(context.ApplicationMessage?.Payload);
+
+            Logger.Information(
+                "Message: ClientId = {clientId}, Topic = {topic}, Payload = {payload}, QoS = {qos}, Retain-Flag = {retainFlag}",
+                context.ClientId,
+                context.ApplicationMessage?.Topic,
+                payload,
+                context.ApplicationMessage?.QualityOfServiceLevel,
+                context.ApplicationMessage?.Retain);
+        }
+
+        /// <summary> 
+        ///     Logs the message from the MQTT connection validation context. 
+        /// </summary> 
+        /// <param name="context">The MQTT connection validation context.</param> 
+        /// <param name="showPassword">A <see cref="bool"/> value indicating whether the password is written to the log or not.</param> 
+        private static void LogMessage(MqttConnectionValidatorContext context, bool showPassword)
+        {
+            if (context == null)
+            {
+                return;
+            }
+
+            if (showPassword)
+            {
+                Logger.Information(
+                    "New connection: ClientId = {clientId}, Endpoint = {endpoint}, Username = {userName}, Password = {password}, CleanSession = {cleanSession}",
+                    context.ClientId,
+                    context.Endpoint,
+                    context.Username,
+                    context.Password,
+                    context.CleanSession);
+            }
+            else
+            {
+                Logger.Information(
+                    "New connection: ClientId = {clientId}, Endpoint = {endpoint}, Username = {userName}, CleanSession = {cleanSession}",
+                    context.ClientId,
+                    context.Endpoint,
+                    context.Username,
+                    context.CleanSession);
+            }
+        }
+    }
 }
