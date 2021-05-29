@@ -13,5 +13,25 @@
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="System.Net.Mqtt" Version="0.6.16-beta" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="System.Net.Mqtt" />
+    <None Remove="Resources\" />
+    <None Remove="Resources\Fonts\" />
+    <None Remove="Resources\Styles\" />
+    <None Remove="Resources\Fonts\fa-solid-900.ttf" />
+    <None Remove="Resources\Fonts\OpenSans-SemiBold.ttf" />
+    <None Remove="Resources\Fonts\OpenSans-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Resources\Fonts\" />
+    <Folder Include="Resources\Styles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Fonts\fa-solid-900.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\OpenSans-SemiBold.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\OpenSans-Regular.ttf" />
   </ItemGroup>
 </Project>

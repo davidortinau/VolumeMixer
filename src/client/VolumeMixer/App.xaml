@@ -3,6 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VolumeMixer.App">
     <Application.Resources>
-
+        <ResourceDictionary Source="Resources/Styles/DefaultTheme.xaml"/>
     </Application.Resources>
 </Application>

@@ -27,6 +27,8 @@
         <Button BackgroundColor="#FF6600" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button BackgroundColor="#FF9900" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button BackgroundColor="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+
+        
     </Grid>
 
 </ContentPage>
