@@ -17,7 +17,7 @@ namespace VolumeMixer.Server
 		{
 			bool isFinishing = false;
 			var deviceIpAddress = GetLocalIPAddress();
-			var config = new MqttConfiguration { Port = 55555 };
+			var config = new MqttConfiguration { Port = 1235 };
 			var server = MqttServer.Create(config);
 
 			server.Start();
