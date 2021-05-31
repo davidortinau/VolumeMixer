@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Net.Mqtt;
+using System.Threading.Tasks;
 
 namespace VolumeMixer.Server
 {
@@ -13,20 +17,20 @@ namespace VolumeMixer.Server
 		const string topic = "test/chat/message";
 		const string exitMessage = "exit";
 
-		static void Main(string[] args)
+		static async Task Main(string[] args)
 		{
 			bool isFinishing = false;
-			var deviceIpAddress = GetLocalIPAddress();
+			var deviceIpAddresses = GetLocalIPAddresses();
 			var config = new MqttConfiguration { Port = 1235 };
 			var server = MqttServer.Create(config);
 
 			server.Start();
 
-			var client = server.CreateClientAsync().Result;
+			var client = await server.CreateClientAsync();
 			var clientId = client.Id;
 			var received = "";
 
-			client.SubscribeAsync(topic, MqttQualityOfService.AtLeastOnce).Wait();
+			await client.SubscribeAsync(topic, MqttQualityOfService.AtLeastOnce);
 			client.MessageStream.Subscribe(message => {
 				if (isFinishing)
 					return;
@@ -41,31 +45,38 @@ namespace VolumeMixer.Server
 					isFinishing = true;
 			});
 
-			Console.WriteLine($"Server {deviceIpAddress}:{config.Port} with topic '{topic}' is up.");
+			Console.WriteLine($"Server [{String.Join("/", deviceIpAddresses)}]:{config.Port} with topic '{topic}' is up.");
+	
 			Console.WriteLine($"Awaiting messages...");
 
 			while (received != exitMessage)
 			{
-				Thread.Sleep(loopDelayTime);
+				await Task.Delay(loopDelayTime);
 			}
 			Console.WriteLine("Shutting down... Received exit command.");
 		}
 
-		static void PublishAsync(IMqttConnectedClient client, string clientId, string message)
+		static Task PublishAsync(IMqttConnectedClient client, string clientId, string message)
 		{
 			Console.WriteLine($"Sending message to {clientId}: {message}");
-			client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce).Wait();
+			return client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce);
 		}
 
-		public static string GetLocalIPAddress()
+		public static List<string> GetLocalIPAddresses()
 		{
+			var addrs = new List<string>();
+			
 			var host = Dns.GetHostEntry(Dns.GetHostName());
 			foreach (var ip in host.AddressList)
 			{
 				if (ip.AddressFamily == AddressFamily.InterNetwork)
-					return ip.ToString();
+					addrs.Add(ip.ToString());
 			}
-			throw new Exception("Local IP Address Not Found!");
+			
+			if (!addrs.Any())
+				throw new Exception("Local IP Address Not Found!");
+
+			return addrs;
 		}
 	}
 }

@@ -28,18 +28,18 @@ namespace VolumeMixer.Pages
             
         }
 
-        static void PublishAsync(IMqttClient client, string clientId, string message)
+        static Task PublishAsync(IMqttClient client, string clientId, string message)
         {
             Console.WriteLine($"Sending message: {message}");
-            client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce).Wait();
+            return client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce);
         }
 
-        void Button_Clicked(System.Object sender, System.EventArgs e)
+        async void Button_Clicked(System.Object sender, System.EventArgs e)
         {
-            Connect();
+            await Connect();
         }
 
-        private void Connect()
+        private async Task Connect()
         {
             try
             {
@@ -54,19 +54,19 @@ namespace VolumeMixer.Pages
                 MaximumQualityOfService = MqttQualityOfService.AtMostOnce,
                 AllowWildcardsInTopicFilters = true
             };
-            var client = MqttClient.CreateAsync("192.168.2.62", config).Result;
+            var client = await MqttClient.CreateAsync("192.168.2.62", config);
             var clientId = "XamarinClient";
             var received = "";
 
-            client.ConnectAsync(new MqttClientCredentials(clientId)).Wait();
-            client.SubscribeAsync(topic, MqttQualityOfService.AtLeastOnce).Wait();
-            client.MessageStream.Subscribe(message => {
+            await client.ConnectAsync(new MqttClientCredentials(clientId));
+            await client.SubscribeAsync(topic, MqttQualityOfService.AtLeastOnce);
+            client.MessageStream.Subscribe(async message => {
                 if (isFinishing)
                     return;
 
                 var data = Encoding.UTF8.GetString(message.Payload).Split(new string[] { ":" }, StringSplitOptions.None);
                 Console.WriteLine($"Message Received from {data[0]}:{data[1]}");
-                PublishAsync(client, clientId, exitMessage);
+                await PublishAsync(client, clientId, exitMessage);
 
                 //Send exit to server
                 received = data[1];
@@ -78,7 +78,7 @@ namespace VolumeMixer.Pages
             Console.WriteLine($"Client connected successfully to {client.Id}:{config.Port}");
             Console.WriteLine($"Awaiting messages...");
 
-            PublishAsync(client, clientId, "Connected.");
+            await PublishAsync(client, clientId, "Connected.");
 
             while (received != exitMessage)
             {
