@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Net.Mqtt;
+using System.Threading.Tasks;
 
 namespace VolumeMixer.Server
 {
@@ -13,7 +17,7 @@ namespace VolumeMixer.Server
 		const string topic = "test/chat/message";
 		const string exitMessage = "exit";
 
-		static void Main(string[] args)
+		static async Task Main(string[] args)
 		{
 			bool isFinishing = false;
 			var deviceIpAddresses = GetLocalIPAddresses();
@@ -22,11 +26,11 @@ namespace VolumeMixer.Server
 
 			server.Start();
 
-			var client = server.CreateClientAsync().Result;
+			var client = await server.CreateClientAsync();
 			var clientId = client.Id;
 			var received = "";
 
-			client.SubscribeAsync(topic, MqttQualityOfService.AtLeastOnce).Wait();
+			await client.SubscribeAsync(topic, MqttQualityOfService.AtLeastOnce);
 			client.MessageStream.Subscribe(message => {
 				if (isFinishing)
 					return;
@@ -47,15 +51,15 @@ namespace VolumeMixer.Server
 
 			while (received != exitMessage)
 			{
-				Thread.Sleep(loopDelayTime);
+				await Task.Delay(loopDelayTime);
 			}
 			Console.WriteLine("Shutting down... Received exit command.");
 		}
 
-		static void PublishAsync(IMqttConnectedClient client, string clientId, string message)
+		static Task PublishAsync(IMqttConnectedClient client, string clientId, string message)
 		{
 			Console.WriteLine($"Sending message to {clientId}: {message}");
-			client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce).Wait();
+			return client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce);
 		}
 
 		public static List<string> GetLocalIPAddresses()
