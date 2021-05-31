@@ -39,7 +39,7 @@ namespace VolumeMixer.Server
 
 				received = data[1];
 
-				PublishAsync(client, clientId, exitMessage);
+				//PublishAsync(client, clientId, exitMessage); // don't exit, stay open for business
 
 				if (received == exitMessage)
 					isFinishing = true;
