@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:icon="clr-namespace:VolumeMixer.Resources.Styles"
-             xmlns:vm="clr-namespace:VolumeMixer.ViewModels"
+             xmlns:vm="clr-namespace:VolumeMixer.ViewModels" xmlns:xct="http://xamarin.com/schemas/2020/toolkit" xmlns:c="clr-namespace:VolumeMixer.Converters"
              ios:Page.UseSafeArea="True"
              Background="#999999"
              Shell.NavBarIsVisible="False"
@@ -22,13 +22,15 @@
             <Setter Property="MinimumTrackColor" Value="#FF3300"/>
             <Setter Property="MaximumTrackColor" Value="#d1d1d1"/>
         </Style>
+
+        <c:ValueChangedEventArgsConverter x:Key="ValueChangedEventArgsConverter"/>
     </ContentPage.Resources>
 
     <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,150" Margin="30">
-        <Slider Grid.Column="0" Grid.Row="1"/>
-        <Slider Grid.Column="1" Grid.Row="1"/>
-        <Slider Grid.Column="2" Grid.Row="1"/>
-        <Slider Grid.Column="3" Grid.Row="1"/>
+        <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}"/>
+        <Slider Grid.Column="1" Grid.Row="1" Value="{Binding Channel2Volume}"/>
+        <Slider Grid.Column="2" Grid.Row="1" Value="{Binding Channel3Volume}"/>
+        <Slider Grid.Column="3" Grid.Row="1" Value="{Binding Channel4Volume}"/>
 
         <Button
             Command="{Binding MuteCommand}" CommandParameter="1"

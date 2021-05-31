@@ -9,7 +9,6 @@ namespace VolumeMixer.Services
     public class MessengerService
     {
         const int loopDelayTime = 250;
-        const string topic = "test/chat/message";
         const string exitMessage = "exit";
 
         public MessengerService()
@@ -17,7 +16,7 @@ namespace VolumeMixer.Services
 
         }
 
-        public async Task Publish(string msg)
+        public async Task Publish(string topic, string msg)
         {
             try
             {
@@ -32,7 +31,7 @@ namespace VolumeMixer.Services
                     AllowWildcardsInTopicFilters = true
                 };
                 var client = await MqttClient.CreateAsync("192.168.2.62", config);
-                var clientId = "XamarinClient";
+                var clientId = "MixerClient";
                 var received = "";
 
                 await client.ConnectAsync(new MqttClientCredentials(clientId));
@@ -56,7 +55,7 @@ namespace VolumeMixer.Services
                 Console.WriteLine($"Client connected successfully to {client.Id}:{config.Port}");
                 //Console.WriteLine($"Awaiting messages...");
 
-                await PublishAsync(client, clientId, msg);
+                await PublishAsync(client, clientId, topic, msg);
 
                 //while (received != exitMessage)
                 //{
@@ -70,7 +69,7 @@ namespace VolumeMixer.Services
             }
         }
 
-        static Task PublishAsync(IMqttClient client, string clientId, string message)
+        static Task PublishAsync(IMqttClient client, string clientId, string topic, string message)
         {
             Console.WriteLine($"Sending message: {message}");
             return client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce);
@@ -78,7 +77,7 @@ namespace VolumeMixer.Services
 
         public async Task Exit()
         {
-            await this.Publish(exitMessage);
+            await this.Publish("mixer",exitMessage);
         }
     }
 }
