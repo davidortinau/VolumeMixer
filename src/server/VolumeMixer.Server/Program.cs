@@ -16,7 +16,7 @@ namespace VolumeMixer.Server
 		static void Main(string[] args)
 		{
 			bool isFinishing = false;
-			var deviceIpAddress = GetLocalIPAddress();
+			var deviceIpAddresses = GetLocalIPAddresses();
 			var config = new MqttConfiguration { Port = 1235 };
 			var server = MqttServer.Create(config);
 
@@ -41,7 +41,8 @@ namespace VolumeMixer.Server
 					isFinishing = true;
 			});
 
-			Console.WriteLine($"Server {deviceIpAddress}:{config.Port} with topic '{topic}' is up.");
+			Console.WriteLine($"Server [{String.Join("/", deviceIpAddresses)}]:{config.Port} with topic '{topic}' is up.");
+	
 			Console.WriteLine($"Awaiting messages...");
 
 			while (received != exitMessage)
@@ -57,15 +58,21 @@ namespace VolumeMixer.Server
 			client.PublishAsync(new MqttApplicationMessage(topic, Encoding.UTF8.GetBytes($"{clientId}:{message}")), MqttQualityOfService.AtLeastOnce).Wait();
 		}
 
-		public static string GetLocalIPAddress()
+		public static List<string> GetLocalIPAddresses()
 		{
+			var addrs = new List<string>();
+			
 			var host = Dns.GetHostEntry(Dns.GetHostName());
 			foreach (var ip in host.AddressList)
 			{
 				if (ip.AddressFamily == AddressFamily.InterNetwork)
-					return ip.ToString();
+					addrs.Add(ip.ToString());
 			}
-			throw new Exception("Local IP Address Not Found!");
+			
+			if (!addrs.Any())
+				throw new Exception("Local IP Address Not Found!");
+
+			return addrs;
 		}
 	}
 }
