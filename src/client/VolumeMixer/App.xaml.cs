@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Mqtt;
+using VolumeMixer.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,18 +13,10 @@ namespace VolumeMixer
             InitializeComponent();
 
             MainPage = new AppShell();
+
+            Hermes = new MessengerService();
         }
 
-        protected override void OnStart()
-        {
-        }
-
-        protected override void OnSleep()
-        {
-        }
-
-        protected override void OnResume()
-        {
-        }
+        public MessengerService Hermes { get; set; }  
     }
 }

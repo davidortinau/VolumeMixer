@@ -30,10 +30,18 @@
         <Slider Grid.Column="2" Grid.Row="1"/>
         <Slider Grid.Column="3" Grid.Row="1"/>
 
-        <Button Clicked="Button_Clicked" BackgroundColor="#FF3300" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
-        <Button BackgroundColor="#FF6600" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
-        <Button BackgroundColor="#FF9900" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
-        <Button BackgroundColor="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button
+            Command="{Binding MuteCommand}" CommandParameter="1"
+            BackgroundColor="#FF3300" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button
+            Command="{Binding MuteCommand}" CommandParameter="2"
+            BackgroundColor="#FF6600" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button
+            Command="{Binding MuteCommand}" CommandParameter="3"
+            BackgroundColor="#FF9900" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button
+            Command="{Binding MuteCommand}" CommandParameter="4"
+            BackgroundColor="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
 
         <Button VerticalOptions="Start" HorizontalOptions="End" Grid.ColumnSpan="4"
                 WidthRequest="64"
