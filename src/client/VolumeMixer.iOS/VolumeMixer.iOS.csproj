@@ -136,5 +136,9 @@
       <Project>{67ACEFC0-56CD-4E57-9225-195B37A57DA7}</Project>
       <Name>VolumeMixer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Microsoft.Maui.Graphics.Controls\src\GraphicsControls\GraphicsControls.csproj">
+      <Project>{8E667248-BAA4-4A85-BCF0-A88CF3B6C56F}</Project>
+      <Name>GraphicsControls</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

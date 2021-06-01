@@ -4,6 +4,7 @@
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:icon="clr-namespace:VolumeMixer.Resources.Styles"
              xmlns:vm="clr-namespace:VolumeMixer.ViewModels" xmlns:xct="http://xamarin.com/schemas/2020/toolkit" xmlns:c="clr-namespace:VolumeMixer.Converters"
+             xmlns:gc="clr-namespace:GraphicsControls;assembly=GraphicsControls" 
              ios:Page.UseSafeArea="True"
              Background="#1d1d1d"
              Shell.NavBarIsVisible="False"
@@ -39,8 +40,20 @@
     </ContentPage.Resources>
 
     <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,150,40" Margin="30">
-        <!--<BoxView Color="#f1f1f1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>-->
-        <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}" ThumbColor="#FF3300"/>
+        <AbsoluteLayout Grid.Column="0" Grid.Row="1" BackgroundColor="#333333">
+            <gc:Slider
+                AbsoluteLayout.LayoutBounds="0.5,0.5,200,200"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Rotation="90"
+                Value="{Binding Channel1Volume}"
+                VisualType="Material"
+                MaximumTrackColor="#d1d1d1"
+                MinimumTrackColor="#FF3300"
+                ThumbColor="#FF3300" 
+                Minimum="0"
+                Maximum="100"/>
+        </AbsoluteLayout>
+        <!--<Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}" ThumbColor="#FF3300"/>-->
         <Slider Grid.Column="1" Grid.Row="1" Value="{Binding Channel2Volume}" ThumbColor="#333333"/>
         <Slider Grid.Column="2" Grid.Row="1" Value="{Binding Channel3Volume}" ThumbColor="#333333"/>
         <Slider Grid.Column="3" Grid.Row="1" Value="{Binding Channel4Volume}" ThumbColor="#FF0000"/>

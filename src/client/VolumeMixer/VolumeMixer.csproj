@@ -46,4 +46,7 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Microsoft.Maui.Graphics.Controls\src\GraphicsControls\GraphicsControls.csproj" />
+  </ItemGroup>
 </Project>
