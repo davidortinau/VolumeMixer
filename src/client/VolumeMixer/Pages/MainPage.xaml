@@ -5,8 +5,9 @@
              xmlns:icon="clr-namespace:VolumeMixer.Resources.Styles"
              xmlns:vm="clr-namespace:VolumeMixer.ViewModels" xmlns:xct="http://xamarin.com/schemas/2020/toolkit" xmlns:c="clr-namespace:VolumeMixer.Converters"
              ios:Page.UseSafeArea="True"
-             Background="#999999"
+             Background="#1d1d1d"
              Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
              x:Class="VolumeMixer.Pages.MainPage">
 
     <ContentPage.BindingContext>
@@ -23,27 +24,48 @@
             <Setter Property="MaximumTrackColor" Value="#d1d1d1"/>
         </Style>
 
+        <Style TargetType="Button">
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="FontFamily" Value="FontAwesome"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="White"/>
+        </Style>
+
         <c:ValueChangedEventArgsConverter x:Key="ValueChangedEventArgsConverter"/>
     </ContentPage.Resources>
 
-    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,150" Margin="30">
-        <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}"/>
-        <Slider Grid.Column="1" Grid.Row="1" Value="{Binding Channel2Volume}"/>
-        <Slider Grid.Column="2" Grid.Row="1" Value="{Binding Channel3Volume}"/>
-        <Slider Grid.Column="3" Grid.Row="1" Value="{Binding Channel4Volume}"/>
-
+    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,150,40" Margin="30">
+        <!--<BoxView Color="#f1f1f1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>-->
+        <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}" ThumbColor="#FF3300"/>
+        <Slider Grid.Column="1" Grid.Row="1" Value="{Binding Channel2Volume}" ThumbColor="#333333"/>
+        <Slider Grid.Column="2" Grid.Row="1" Value="{Binding Channel3Volume}" ThumbColor="#333333"/>
+        <Slider Grid.Column="3" Grid.Row="1" Value="{Binding Channel4Volume}" ThumbColor="#FF0000"/>
+        
         <Button
+            Text="{x:Static icon:IconFont.VolumeUp}" 
             Command="{Binding MuteCommand}" CommandParameter="1"
-            BackgroundColor="#FF3300" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="#FF3300" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button
+            Text="{x:Static icon:IconFont.VolumeMute}" 
             Command="{Binding MuteCommand}" CommandParameter="2"
-            BackgroundColor="#FF6600" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="#333333" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button
+            Text="{x:Static icon:IconFont.VolumeMute}" 
             Command="{Binding MuteCommand}" CommandParameter="3"
-            BackgroundColor="#FF9900" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="#333333" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button
+            Text="{x:Static icon:IconFont.VolumeUp}" 
             Command="{Binding MuteCommand}" CommandParameter="4"
-            BackgroundColor="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+
+        <Label Text="Teams" HorizontalOptions="Center" Grid.Column="0" Grid.Row="3"/>
+        <Label Text="Spotify" HorizontalOptions="Center" Grid.Column="1" Grid.Row="3"/>
+        <Label Text="Discord" HorizontalOptions="Center" Grid.Column="2" Grid.Row="3"/>
+        <Label Text="Master" HorizontalOptions="Center" Grid.Column="3" Grid.Row="3"/>
 
         <Button VerticalOptions="Start" HorizontalOptions="End" Grid.ColumnSpan="4"
                 WidthRequest="64"
@@ -52,13 +74,7 @@
                 Margin="-30"
                 x:Name="ConnectBtn"
                 Command="{Binding ConnectCommand}"
-                >
-            <Button.ImageSource>
-                <FontImageSource FontFamily="FontAwesome"
-                                 Glyph="{x:Static icon:IconFont.Server}"
-                                 Color="#1d1d1d"/>
-            </Button.ImageSource>
-        </Button>
+                Text="{x:Static icon:IconFont.Server}"/>
     </Grid>
 
 </ContentPage>
