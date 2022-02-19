@@ -51,8 +51,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Net.Mqtt" Version="0.6.16-beta" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="1.0.0-pre3" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="1.0.0-pre7" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview1" />
 	</ItemGroup>
 
 	<ItemGroup>

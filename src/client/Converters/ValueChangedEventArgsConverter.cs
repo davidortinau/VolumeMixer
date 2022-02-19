@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using CommunityToolkit.Maui.Extensions.Internals;
+using CommunityToolkit.Maui.Extensions;
 
 
 namespace VolumeMixer.Converters;

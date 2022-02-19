@@ -1,11 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:icon="clr-namespace:VolumeMixer.Resources.Styles"
              xmlns:vm="clr-namespace:VolumeMixer.ViewModels" 
              xmlns:c="clr-namespace:VolumeMixer.Converters"
-             ios:Page.UseSafeArea="True"
              Background="#1d1d1d"
              Shell.NavBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled"
@@ -23,6 +21,7 @@
             <Setter Property="ThumbColor" Value="Black"/>
             <Setter Property="MinimumTrackColor" Value="#FF3300"/>
             <Setter Property="MaximumTrackColor" Value="#d1d1d1"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
         </Style>
 
         <Style TargetType="Button">
@@ -36,9 +35,10 @@
             <Setter Property="TextColor" Value="White"/>
         </Style>
 
-        <c:ValueChangedEventArgsConverter x:Key="ValueChangedEventArgsConverter"/>
+        <!--<c:ValueChangedEventArgsConverter x:Key="ValueChangedEventArgsConverter"/>-->
+        <c:BoolToColorConverter x:Key="ColorConv"/>
     </ContentPage.Resources>
-
+    <ContentPage.Content>
     <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,150,40" Margin="30">
         <!--<BoxView Color="#f1f1f1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>-->
         <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}" ThumbColor="#FF3300"/>
@@ -49,7 +49,7 @@
         <Button
             Text="{x:Static icon:IconFont.VolumeUp}" 
             Command="{Binding MuteCommand}" CommandParameter="1"
-            Background="#FF3300" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="{Binding IsOneMuted, Converter={StaticResource ColorConv}, ConverterParameter='#FF3300;#333333'}" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button
             Text="{x:Static icon:IconFont.VolumeMute}" 
             Command="{Binding MuteCommand}" CommandParameter="2"
@@ -77,5 +77,5 @@
                 Command="{Binding ConnectCommand}"
                 Text="{x:Static icon:IconFont.Server}"/>
     </Grid>
-
+    </ContentPage.Content>
 </ContentPage>

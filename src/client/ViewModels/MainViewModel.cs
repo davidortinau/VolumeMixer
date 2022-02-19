@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace VolumeMixer.ViewModels;
 
-public class MainViewModel
+public class MainViewModel : ObservableObject
 {
     private double channel1Volume;
     private double channel2Volume;
@@ -23,6 +24,8 @@ public class MainViewModel
     void OnMute(string channel)
     {
         (App.Current as App).Hermes.Publish("mute",$"{channel}");
+        channel1Volume = 0;
+        IsOneMuted = !IsOneMuted;
     }
 
     private void OnConnect()
@@ -74,5 +77,18 @@ public class MainViewModel
     {
         Debug.WriteLine($"channel: {channel} | volume: {volume}");
         await (App.Current as App).Hermes.Publish($"volume/{channel}", $"{volume}");
+    }
+
+    private bool isOneMuted;
+
+    public bool IsOneMuted
+    {
+        get {
+            return channel1Volume == 0;
+        }
+        set
+        {
+            SetProperty(ref isOneMuted, value);
+        }
     }
 }

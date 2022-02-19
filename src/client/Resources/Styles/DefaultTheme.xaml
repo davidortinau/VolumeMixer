@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:app="clr-namespace:VolumeMixer.Resources.Styles"
     x:Class="VolumeMixer.Resources.Styles.DefaultTheme">
-    <Color x:Key="Primary">#512BD4</Color>
+    <Color x:Key="Primary">#FF3300</Color>
         <Color x:Key="Secondary">#DFD8F7</Color>
         <Color x:Key="Tertiary">#2B0B98</Color>
         <Color x:Key="Neutral">#969696</Color>

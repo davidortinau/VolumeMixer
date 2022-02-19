@@ -9,7 +9,9 @@
         <vm:SettingsViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center" HorizontalOptions="Center"> 
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center"
+                     Spacing="8"
+                     > 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Server"/>
                 <Entry Placeholder="Server Address"/>
