@@ -6,6 +6,7 @@ using System.Net.Mqtt;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Views;
 
 namespace VolumeMixer.Pages;
 
@@ -23,8 +24,25 @@ public partial class MainPage
         
     }
 
-    
+    void ConnectBtn_Clicked(System.Object sender, System.EventArgs e)
+    {
+        
+        this.ShowPopup(new Popup
+        {
+            Content = new VerticalStackLayout
+            {
+                Children =
+                    {
+                        new Label
+                        {
+                            Text = "This is a very important message!"
+                        }
+                    }
+            }
+        });
+    }
 
 
-    
+
+
 }

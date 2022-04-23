@@ -39,29 +39,33 @@
         <c:BoolToColorConverter x:Key="ColorConv"/>
     </ContentPage.Resources>
     <ContentPage.Content>
-    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,150,40" Margin="30">
+    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,66,40" Margin="30">
         <!--<BoxView Color="#f1f1f1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>-->
-        <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}" ThumbColor="#FF3300"/>
-        <Slider Grid.Column="1" Grid.Row="1" Value="{Binding Channel2Volume}" ThumbColor="#333333"/>
-        <Slider Grid.Column="2" Grid.Row="1" Value="{Binding Channel3Volume}" ThumbColor="#333333"/>
-        <Slider Grid.Column="3" Grid.Row="1" Value="{Binding Channel4Volume}" ThumbColor="#FF0000"/>
+        <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}" ThumbColor="{Binding IsOneMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
+        <Slider Grid.Column="1" Grid.Row="1" Value="{Binding Channel2Volume}" ThumbColor="{Binding IsTwoMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
+        <Slider Grid.Column="2" Grid.Row="1" Value="{Binding Channel3Volume}" ThumbColor="{Binding IsThreeMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
+        <Slider Grid.Column="3" Grid.Row="1" Value="{Binding Channel4Volume}" ThumbColor="{Binding IsMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
         
         <Button
             Text="{x:Static icon:IconFont.VolumeUp}" 
             Command="{Binding MuteCommand}" CommandParameter="1"
-            Background="{Binding IsOneMuted, Converter={StaticResource ColorConv}, ConverterParameter='#FF3300;#333333'}" Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="{Binding IsOneMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button
             Text="{x:Static icon:IconFont.VolumeMute}" 
             Command="{Binding MuteCommand}" CommandParameter="2"
-            Background="#333333" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="{Binding IsTwoMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button
             Text="{x:Static icon:IconFont.VolumeMute}" 
             Command="{Binding MuteCommand}" CommandParameter="3"
-            Background="#333333" Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="{Binding IsThreeMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
         <Button
             Text="{x:Static icon:IconFont.VolumeUp}" 
             Command="{Binding MuteCommand}" CommandParameter="4"
-            Background="#FF0000" Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+            Background="{Binding IsFourMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
 
         <Label Text="Teams" HorizontalOptions="Center" Grid.Column="0" Grid.Row="3"/>
         <Label Text="Spotify" HorizontalOptions="Center" Grid.Column="1" Grid.Row="3"/>
@@ -74,7 +78,7 @@
                 Background="Transparent"
                 Margin="-30"
                 x:Name="ConnectBtn"
-                Command="{Binding ConnectCommand}"
+                Clicked="ConnectBtn_Clicked"
                 Text="{x:Static icon:IconFont.Server}"/>
     </Grid>
     </ContentPage.Content>
