@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:VolumeMixer.ViewModels"
+    Shell.PresentationMode="ModalAnimated"
+    x:Class="VolumeMixer.Pages.SettingsPage">
+    <ContentPage.BindingContext>
+        <vm:SettingsViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center"
+                     Spacing="8"
+                     > 
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Server"/>
+                <Entry Placeholder="Server Address"/>
+            </StackLayout>
+
+            <Button Text="Connect"/>
+            <Button Text="Cancel"
+                    Style="{StaticResource PrimaryButtonOutline}"
+                    Command="{Binding CloseCommand}"
+                    />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

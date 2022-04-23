@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:icon="clr-namespace:VolumeMixer.Resources.Styles"
+             xmlns:vm="clr-namespace:VolumeMixer.ViewModels" 
+             xmlns:c="clr-namespace:VolumeMixer.Converters"
+             Background="#1d1d1d"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             x:Class="VolumeMixer.Pages.MainPage">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <Style TargetType="Slider">
+            <Setter Property="Rotation" Value="-90"/>
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="100"/>
+            <Setter Property="ThumbColor" Value="Black"/>
+            <Setter Property="MinimumTrackColor" Value="#FF3300"/>
+            <Setter Property="MaximumTrackColor" Value="#d1d1d1"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="FontFamily" Value="FontAwesome"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="White"/>
+        </Style>
+
+        <!--<c:ValueChangedEventArgsConverter x:Key="ValueChangedEventArgsConverter"/>-->
+        <c:BoolToColorConverter x:Key="ColorConv"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="80,*,66,40" Margin="30">
+        <!--<BoxView Color="#f1f1f1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>-->
+        <Slider Grid.Column="0" Grid.Row="1" Value="{Binding Channel1Volume}" ThumbColor="{Binding IsOneMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
+        <Slider Grid.Column="1" Grid.Row="1" Value="{Binding Channel2Volume}" ThumbColor="{Binding IsTwoMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
+        <Slider Grid.Column="2" Grid.Row="1" Value="{Binding Channel3Volume}" ThumbColor="{Binding IsThreeMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
+        <Slider Grid.Column="3" Grid.Row="1" Value="{Binding Channel4Volume}" ThumbColor="{Binding IsMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"/>
+        
+        <Button
+            Text="{x:Static icon:IconFont.VolumeUp}" 
+            Command="{Binding MuteCommand}" CommandParameter="1"
+            Background="{Binding IsOneMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="0" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button
+            Text="{x:Static icon:IconFont.VolumeMute}" 
+            Command="{Binding MuteCommand}" CommandParameter="2"
+            Background="{Binding IsTwoMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button
+            Text="{x:Static icon:IconFont.VolumeMute}" 
+            Command="{Binding MuteCommand}" CommandParameter="3"
+            Background="{Binding IsThreeMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="2" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+        <Button
+            Text="{x:Static icon:IconFont.VolumeUp}" 
+            Command="{Binding MuteCommand}" CommandParameter="4"
+            Background="{Binding IsFourMuted, Converter={StaticResource ColorConv}, ConverterParameter='#333333;#FF3300'}"
+            Grid.Column="3" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="6" WidthRequest="80" HeightRequest="80"/>
+
+        <Label Text="Teams" HorizontalOptions="Center" Grid.Column="0" Grid.Row="3"/>
+        <Label Text="Spotify" HorizontalOptions="Center" Grid.Column="1" Grid.Row="3"/>
+        <Label Text="Discord" HorizontalOptions="Center" Grid.Column="2" Grid.Row="3"/>
+        <Label Text="Master" HorizontalOptions="Center" Grid.Column="3" Grid.Row="3"/>
+
+        <Button VerticalOptions="Start" HorizontalOptions="End" Grid.ColumnSpan="4"
+                WidthRequest="64"
+                HeightRequest="64"
+                Background="Transparent"
+                Margin="-30"
+                x:Name="ConnectBtn"
+                Clicked="ConnectBtn_Clicked"
+                Text="{x:Static icon:IconFont.Server}"/>
+    </Grid>
+    </ContentPage.Content>
+</ContentPage>
