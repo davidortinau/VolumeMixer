@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace VolumeMixer.ViewModels;
 
-public class MainViewModel : ObservableObject
+public class MainViewModel : ObservableRecipient
 {
     private double channel1Volume;
     private double channel2Volume;
@@ -24,8 +24,8 @@ public class MainViewModel : ObservableObject
     void OnMute(string channel)
     {
         (App.Current as App).Hermes.Publish("mute",$"{channel}");
-        channel1Volume = 0;
-        IsOneMuted = !IsOneMuted;
+        
+        IsOneMuted = !isOneMuted;
     }
 
     private void OnConnect()
@@ -79,7 +79,7 @@ public class MainViewModel : ObservableObject
         await (App.Current as App).Hermes.Publish($"volume/{channel}", $"{volume}");
     }
 
-    private bool isOneMuted;
+    private bool isOneMuted = false;
 
     public bool IsOneMuted
     {
@@ -88,7 +88,15 @@ public class MainViewModel : ObservableObject
         }
         set
         {
-            SetProperty(ref isOneMuted, value);
+            if (!value)
+            {
+                Channel1Volume = 0;
+            }
+            else
+            {
+                Channel1Volume = 50;
+            }
+            SetProperty(ref isOneMuted, value, true);
         }
     }
 }

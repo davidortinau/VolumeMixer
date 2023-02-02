@@ -8,7 +8,7 @@
 
     <Application.MainPage>
         <Shell>
-            <pages:MainPage/>
+            <pages:MixerPage/>
         </Shell>
 
     </Application.MainPage>
