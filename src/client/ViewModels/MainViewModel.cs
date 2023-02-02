@@ -24,8 +24,25 @@ public class MainViewModel : ObservableRecipient
     void OnMute(string channel)
     {
         (App.Current as App).Hermes.Publish("mute",$"{channel}");
+
+        switch(int.Parse(channel))
+        {
+            case 1:
+                IsOneMuted = !isOneMuted;
+                break;
+            case 2:
+                IsTwoMuted = !isTwoMuted;
+                break;
+            case 3:
+                IsThreeMuted = !isThreeMuted;
+                break;
+            case 4:
+                IsFourMuted = !isFourMuted;
+                break;
+            default:
+                break;
+        }
         
-        IsOneMuted = !isOneMuted;
     }
 
     private void OnConnect()
@@ -35,68 +52,156 @@ public class MainViewModel : ObservableRecipient
 
     public double Channel1Volume
     {
-        get => channel1Volume;
+        get
+        {
+            if (isOneMuted)
+                return 0;
+
+            return channel1Volume;
+        }
+
         set
         {
-            channel1Volume = value;
-            ChangeVolume(1, value);
+            if (isOneMuted)
+            {
+                OnPropertyChanged(nameof(Channel1Volume));
+            }
+            else
+            {
+                channel1Volume = value;
+                PublishVolumeChange(1, value);
+            }
+            
         }
     }
-    
+
     public double Channel2Volume
     {
-        get => channel2Volume;
+        get
+        {
+            if (isTwoMuted)
+                return 0;
+
+            return channel2Volume;
+        }
         set
         {
-            channel2Volume = value;
-            ChangeVolume(2, value);
+            if (isTwoMuted)
+            {
+                OnPropertyChanged(nameof(Channel2Volume));
+            }
+            else
+            {
+                channel2Volume = value;
+                PublishVolumeChange(2, value);
+            }
         }
     }
 
     public double Channel3Volume
     {
-        get => channel3Volume;
+        get
+        {
+            if (isThreeMuted)
+                return 0;
+
+            return channel3Volume;
+        }
         set
         {
-            channel3Volume = value;
-            ChangeVolume(3, value);
+            if (isThreeMuted)
+            {
+                OnPropertyChanged(nameof(Channel3Volume));
+            }
+            else
+            {
+                channel3Volume = value;
+                PublishVolumeChange(3, value);
+            }
         }
     }
 
     public double Channel4Volume
     {
-        get => channel4Volume;
+        get
+        {
+            if (isFourMuted)
+                return 0;
+
+            return channel4Volume;
+        }
         set
         {
-            channel4Volume = value;
-            ChangeVolume(4, value);
+            if (isFourMuted)
+            {
+                OnPropertyChanged(nameof(Channel4Volume));
+            }
+            else
+            {
+                channel4Volume = value;
+                PublishVolumeChange(4, value);
+            }
         }
     }
 
-    async Task ChangeVolume(int channel, double volume)
+    async Task PublishVolumeChange(int channel, double volume)
     {
         Debug.WriteLine($"channel: {channel} | volume: {volume}");
         await (App.Current as App).Hermes.Publish($"volume/{channel}", $"{volume}");
     }
 
-    private bool isOneMuted = false;
-
+    private bool isOneMuted;
     public bool IsOneMuted
     {
         get {
-            return channel1Volume == 0;
+            return isOneMuted;
         }
         set
         {
-            if (!value)
-            {
-                Channel1Volume = 0;
-            }
-            else
-            {
-                Channel1Volume = 50;
-            }
-            SetProperty(ref isOneMuted, value, true);
+            SetProperty(ref isOneMuted, value);
+            OnPropertyChanged(nameof(Channel1Volume));
+        }
+    }
+
+    private bool isTwoMuted;
+    public bool IsTwoMuted
+    {
+        get
+        {
+            return isTwoMuted;
+        }
+        set
+        {
+            SetProperty(ref isTwoMuted, value);
+            OnPropertyChanged(nameof(Channel2Volume));
+        }
+    }
+
+    private bool isThreeMuted;
+    public bool IsThreeMuted
+    {
+        get
+        {
+            return isThreeMuted;
+        }
+        set
+        {
+            SetProperty(ref isThreeMuted, value);
+            OnPropertyChanged(nameof(Channel3Volume));
+        }
+    }
+
+    private bool isFourMuted;
+    public bool IsFourMuted
+    {
+        get
+        {
+            return isFourMuted;
+        }
+        set
+        {
+            SetProperty(ref isFourMuted, value);
+            OnPropertyChanged(nameof(Channel4Volume));
         }
     }
 }
